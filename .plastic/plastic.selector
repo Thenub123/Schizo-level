@@ -1,0 +1,4 @@
+repository "schizo@the_nub123@cloud"
+  path "/"
+    br "/main"
+    co "/main"
