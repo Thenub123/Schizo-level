@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
 public class PlayerMovementTutorial : MonoBehaviour
 {
@@ -35,12 +36,20 @@ public class PlayerMovementTutorial : MonoBehaviour
 
     Rigidbody rb;
 
+    public Animator anim;
+
+    public ParticleSystem shoot;
+    public ParticleSystem burst;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
         readyToJump = true;
+
+        shoot.Pause();
+        burst.Pause();
     }
 
     private void Update()
@@ -63,6 +72,22 @@ public class PlayerMovementTutorial : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0;
+
+        if (Input.GetMouseButtonDown(0)){
+            anim.SetTrigger("Shoot");
+            ParticleSystem shoot_particle;
+            ParticleSystem burst_particle;
+            shoot_particle = Instantiate(shoot, shoot.transform.position, shoot.transform.rotation);
+            shoot_particle.Play();
+
+            RaycastHit hit;
+
+            if (Physics.Raycast(orientation.transform.position, new Vector3(0, 0, 0), out hit, Mathf.Infinity, whatIsGround))
+            {
+                burst_particle = Instantiate(burst, hit.point, shoot.transform.rotation);
+                burst_particle.Play();
+            }
+        }
     }
 
     private void FixedUpdate()
