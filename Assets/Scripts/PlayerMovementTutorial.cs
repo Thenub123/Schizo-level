@@ -28,6 +28,7 @@ public class PlayerMovementTutorial : MonoBehaviour
     bool grounded;
 
     public Transform orientation;
+    public Transform cam;
 
     float horizontalInput;
     float verticalInput;
@@ -56,6 +57,7 @@ public class PlayerMovementTutorial : MonoBehaviour
     {
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+        Vector3 mousePos = Input.mousePosition;
 
         // if(groundCheck.isGrounded) {
         //     grounded = true;
@@ -73,20 +75,30 @@ public class PlayerMovementTutorial : MonoBehaviour
         else
             rb.drag = 0;
 
+        Debug.DrawRay(orientation.transform.position, cam.transform.TransformDirection(Vector3.forward), Color.green);
+
         if (Input.GetMouseButtonDown(0)){
             anim.SetTrigger("Shoot");
             ParticleSystem shoot_particle;
             ParticleSystem burst_particle;
             shoot_particle = Instantiate(shoot, shoot.transform.position, shoot.transform.rotation);
+            shoot_particle.gameObject.SetActive(true);
             shoot_particle.Play();
 
             RaycastHit hit;
 
-            if (Physics.Raycast(orientation.transform.position, new Vector3(0, 0, 0), out hit, Mathf.Infinity, whatIsGround))
+            if (Physics.Raycast(orientation.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, whatIsGround))
             {
-                burst_particle = Instantiate(burst, hit.point, shoot.transform.rotation);
+                burst_particle = Instantiate(burst, hit.point, burst.transform.rotation);
+                burst_particle.gameObject.SetActive(true);
                 burst_particle.Play();
+
+                if(hit.rigidbody) {
+                    hit.rigidbody.AddForceAtPosition(1000 * cam.transform.TransformDirection(Vector3.forward), hit.point);
+                }
             }
+
+            
         }
     }
 
