@@ -25,6 +25,7 @@ public class PlayerMovementTutorial : MonoBehaviour
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
+    public LayerMask whatIsEnemy;
     bool grounded;
 
     public Transform orientation;
@@ -41,6 +42,8 @@ public class PlayerMovementTutorial : MonoBehaviour
 
     public ParticleSystem shoot;
     public ParticleSystem burst;
+
+    public Animator screenShake;
 
     private void Start()
     {
@@ -79,6 +82,7 @@ public class PlayerMovementTutorial : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0)){
             anim.SetTrigger("Shoot");
+            screenShake.SetTrigger("Shake");
             ParticleSystem shoot_particle;
             ParticleSystem burst_particle;
             shoot_particle = Instantiate(shoot, shoot.transform.position, shoot.transform.rotation);
@@ -95,6 +99,18 @@ public class PlayerMovementTutorial : MonoBehaviour
 
                 if(hit.rigidbody) {
                     hit.rigidbody.AddForceAtPosition(1000 * cam.transform.TransformDirection(Vector3.forward), hit.point);
+                }
+            }
+
+            if (Physics.Raycast(orientation.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, whatIsEnemy))
+            {
+                burst_particle = Instantiate(burst, hit.point, burst.transform.rotation);
+                burst_particle.gameObject.SetActive(true);
+                burst_particle.Play();
+
+                if(hit.collider.GetComponent<Enemy>()) {
+                    hit.collider.GetComponent<Enemy>().Hit();
+                    hit.collider.GetComponent<Enemy>().health -= 10;
                 }
             }
 
