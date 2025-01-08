@@ -38,7 +38,9 @@ public class PlayerMovementTutorial : MonoBehaviour
 
     Rigidbody rb;
 
-    public Animator anim;
+    public Animator[] gun_anim;
+
+    public int current_weapon;
 
     public ParticleSystem shoot;
     public ParticleSystem burst;
@@ -80,8 +82,25 @@ public class PlayerMovementTutorial : MonoBehaviour
 
         Debug.DrawRay(orientation.transform.position, cam.transform.TransformDirection(Vector3.forward), Color.green);
 
+        if(Input.GetAxis("Mouse ScrollWheel") > 0) {
+            current_weapon += 1;
+        }
+
+        if(Input.GetAxis("Mouse ScrollWheel") < 0) {
+            current_weapon -= 1;
+        }
+
+        foreach (Animator anim in gun_anim) {
+            if (gun_anim[current_weapon] != anim) {
+                anim.SetBool("Disabled", true);
+            }
+            else {
+                anim.SetBool("Disabled", false);
+            }
+        }
+
         if (Input.GetMouseButtonDown(0)){
-            anim.SetTrigger("Shoot");
+            gun_anim[current_weapon].SetTrigger("Shoot");
             screenShake.SetTrigger("Shake");
             ParticleSystem shoot_particle;
             ParticleSystem burst_particle;
@@ -114,7 +133,10 @@ public class PlayerMovementTutorial : MonoBehaviour
                 }
             }
 
-            
+        }
+
+        if(Input.GetKeyDown(KeyCode.F)) {
+
         }
     }
 
