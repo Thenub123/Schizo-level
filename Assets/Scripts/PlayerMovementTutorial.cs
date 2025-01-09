@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
+using System.Linq;
 
 public class PlayerMovementTutorial : MonoBehaviour
 {
@@ -39,6 +40,9 @@ public class PlayerMovementTutorial : MonoBehaviour
     Rigidbody rb;
 
     public Animator[] gun_anim;
+    public float[] cooldowns;
+
+    bool canShoot = true;
 
     public int current_weapon;
 
@@ -83,11 +87,20 @@ public class PlayerMovementTutorial : MonoBehaviour
         Debug.DrawRay(orientation.transform.position, cam.transform.TransformDirection(Vector3.forward), Color.green);
 
         if(Input.GetAxis("Mouse ScrollWheel") > 0) {
-            current_weapon += 1;
+            if(gun_anim.Length - 1 > current_weapon) {
+                current_weapon += 1;
+            } else {
+                current_weapon = 0;
+            }
+            
         }
 
         if(Input.GetAxis("Mouse ScrollWheel") < 0) {
-            current_weapon -= 1;
+            if(current_weapon == 0) {
+                current_weapon = gun_anim.Length - 1;
+            } else {
+                current_weapon -= 1;
+            }
         }
 
         foreach (Animator anim in gun_anim) {
@@ -99,7 +112,11 @@ public class PlayerMovementTutorial : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(0)){
+        if (Input.GetMouseButtonDown(0) && canShoot == true){
+            canShoot = false;
+            IEnumerator cooldown = Cooldown();
+            StartCoroutine(cooldown);
+
             gun_anim[current_weapon].SetTrigger("Shoot");
             screenShake.SetTrigger("Shake");
             ParticleSystem shoot_particle;
@@ -115,9 +132,18 @@ public class PlayerMovementTutorial : MonoBehaviour
                 burst_particle = Instantiate(burst, hit.point, burst.transform.rotation);
                 burst_particle.gameObject.SetActive(true);
                 burst_particle.Play();
+                
+                if(current_weapon == 1) {
+                    burst_particle = Instantiate(burst, hit.point, burst.transform.rotation);
+                    burst_particle.gameObject.SetActive(true);
+                    burst_particle.Play();
+                }
 
                 if(hit.rigidbody) {
                     hit.rigidbody.AddForceAtPosition(1000 * cam.transform.TransformDirection(Vector3.forward), hit.point);
+                }
+                if(current_weapon == 1) {
+                    rb.AddRelativeForce(-cam.transform.TransformDirection(Vector3.forward) * 1000);
                 }
             }
 
@@ -133,9 +159,6 @@ public class PlayerMovementTutorial : MonoBehaviour
                 }
             }
 
-        }
-
-        if(Input.GetKeyDown(KeyCode.F)) {
 
         }
     }
@@ -198,4 +221,10 @@ public class PlayerMovementTutorial : MonoBehaviour
     {
         readyToJump = true;
     }
+
+    IEnumerator Cooldown() {
+        yield return new WaitForSeconds(cooldowns[current_weapon]);
+        canShoot = true;
+    }
+    
 }
