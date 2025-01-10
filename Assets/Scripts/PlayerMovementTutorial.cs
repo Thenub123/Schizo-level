@@ -40,9 +40,11 @@ public class PlayerMovementTutorial : MonoBehaviour
     Rigidbody rb;
 
     public Animator[] gun_anim;
+    public Animator arm;
     public float[] cooldowns;
 
     bool canShoot = true;
+    public bool canSlap = true;
 
     public int current_weapon;
 
@@ -104,12 +106,17 @@ public class PlayerMovementTutorial : MonoBehaviour
         }
 
         foreach (Animator anim in gun_anim) {
-            if (gun_anim[current_weapon] != anim) {
+            if(canSlap){
+                if (gun_anim[current_weapon] != anim) {
+                    anim.SetBool("Disabled", true);
+                }
+                else{
+                    anim.SetBool("Disabled", false);
+                }
+            } else {
                 anim.SetBool("Disabled", true);
             }
-            else {
-                anim.SetBool("Disabled", false);
-            }
+
         }
 
         if (Input.GetMouseButtonDown(0) && canShoot == true){
@@ -158,8 +165,38 @@ public class PlayerMovementTutorial : MonoBehaviour
                     hit.collider.GetComponent<Enemy>().health -= 10;
                 }
             }
+        }
+        
 
+        if(Input.GetKeyDown(KeyCode.F) && canSlap) {
+            IEnumerator cooldown = Slap();
+            canSlap = false;
+            canShoot = false;
+            gun_anim[current_weapon].SetBool("Disabled", true);
+            arm.SetTrigger("Hit");
+            screenShake.SetTrigger("Shake");
+            StartCoroutine(cooldown);
 
+            RaycastHit hit;
+
+            if (Physics.Raycast(orientation.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, 2, whatIsGround))
+            {
+                if(hit.rigidbody) {
+                    hit.rigidbody.AddForceAtPosition(1000 * cam.transform.TransformDirection(Vector3.forward), hit.point);
+                }
+            }
+
+            if (Physics.Raycast(orientation.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, 2, whatIsEnemy))
+            {
+                ParticleSystem burst_particle;
+                burst_particle = Instantiate(burst, hit.point, burst.transform.rotation);
+                burst_particle.gameObject.SetActive(true);
+                burst_particle.Play();
+                if(hit.collider.GetComponent<Enemy>()) {
+                    hit.collider.GetComponent<Enemy>().Hit();
+                    hit.collider.GetComponent<Enemy>().health -= 10;
+                }
+            }
         }
     }
 
@@ -225,6 +262,13 @@ public class PlayerMovementTutorial : MonoBehaviour
     IEnumerator Cooldown() {
         yield return new WaitForSeconds(cooldowns[current_weapon]);
         canShoot = true;
+    }
+
+    IEnumerator Slap() {
+        yield return new WaitForSeconds(0.35f);
+        canSlap = true;
+        canShoot = true;
+        gun_anim[current_weapon].SetBool("Disabled", false);
     }
     
 }
