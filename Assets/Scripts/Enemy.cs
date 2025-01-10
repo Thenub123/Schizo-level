@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -13,10 +14,20 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator hitCoroutine;
 
+    public bool boss;
+
+    public TMP_Text healthText;
+    public Slider slider;
+
     void Update()
     {
         if(health <= 0){
             Die();
+        }
+
+        if(boss) {
+            healthText.text = health.ToString();
+            slider.value = health;
         }
     }
 
