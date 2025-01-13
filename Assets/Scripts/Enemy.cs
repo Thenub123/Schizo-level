@@ -46,16 +46,10 @@ public class Enemy : MonoBehaviour
             bossAnim.SetBool("Enabled", true);
         }
 
-        if(canAttack) {
+        if(canAttack && bossEnabled) {
             canAttack = false;
             IEnumerator animTimer = AttackTimer();
             StartCoroutine(animTimer);
-        }
-
-        if(canDrop && playerMovement.grounded) {
-            canDrop = false;
-            IEnumerator dropTimer = DropTimer();
-            StartCoroutine(dropTimer);
         }
     }
 
@@ -85,19 +79,13 @@ public class Enemy : MonoBehaviour
         }
         else if(num == 1) {
             bossAnim.SetTrigger("Left");
+            GameObject dropped = Instantiate(drop, new Vector3(player.position.x, -13.3f, player.position.z), player.rotation);
+            dropped.SetActive(true);
         }
         else {
             bossAnim.SetTrigger("Jump");
         }
         yield return new WaitForSeconds(bossTimer);
         canAttack = true;
-    }
-
-    private IEnumerator DropTimer()
-    {
-        GameObject dropped = Instantiate(drop, new Vector3(player.position.x, -13.3f, player.position.z), player.rotation);
-        dropped.SetActive(true);
-        yield return new WaitForSeconds(bossTimer);
-        canDrop = true;
     }
 }

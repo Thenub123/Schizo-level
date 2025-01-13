@@ -30,7 +30,7 @@ MonoBehaviour:
     m_Value: 65472
   tint:
     m_OverrideState: 0
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    m_Value: {r: 0, g: 0.25335073, b: 1, a: 1}
   highQualityFiltering:
     m_OverrideState: 0
     m_Value: 0
@@ -95,11 +95,11 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: -1
   colorFilter:
-    m_OverrideState: 0
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 0.8820755, b: 0.91780275, a: 1}
   hueShift:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: -8
   saturation:
     m_OverrideState: 1
     m_Value: -21
@@ -118,7 +118,7 @@ MonoBehaviour:
   active: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.348
+    m_Value: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,6 +137,53 @@ MonoBehaviour:
   - {fileID: -6856864223308767739}
   - {fileID: -5899739754635749169}
   - {fileID: 6816327034309190663}
+  - {fileID: 3727047895369489012}
+--- !u!114 &3727047895369489012
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c01700fd266d6914ababb731e09af2eb, type: 3}
+  m_Name: DepthOfField
+  m_EditorClassIdentifier: 
+  active: 0
+  mode:
+    m_OverrideState: 1
+    m_Value: 1
+  gaussianStart:
+    m_OverrideState: 1
+    m_Value: 3.4
+  gaussianEnd:
+    m_OverrideState: 1
+    m_Value: 11.5
+  gaussianMaxRadius:
+    m_OverrideState: 0
+    m_Value: 1
+  highQualitySampling:
+    m_OverrideState: 0
+    m_Value: 0
+  focusDistance:
+    m_OverrideState: 0
+    m_Value: 10
+  aperture:
+    m_OverrideState: 0
+    m_Value: 5.6
+  focalLength:
+    m_OverrideState: 0
+    m_Value: 50
+  bladeCount:
+    m_OverrideState: 0
+    m_Value: 5
+  bladeCurvature:
+    m_OverrideState: 0
+    m_Value: 1
+  bladeRotation:
+    m_OverrideState: 0
+    m_Value: 0
 --- !u!114 &6816327034309190663
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -152,7 +199,7 @@ MonoBehaviour:
   active: 1
   lift:
     m_OverrideState: 1
-    m_Value: {x: 0.9684454, y: 0.9554827, z: 1, w: 0}
+    m_Value: {x: 0.87909454, y: 0.9367737, z: 1, w: 0}
   gamma:
     m_OverrideState: 1
     m_Value: {x: 0.9072449, y: 0.9206326, z: 1, w: -0.11350737}
