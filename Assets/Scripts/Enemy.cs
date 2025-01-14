@@ -26,6 +26,7 @@ public class Enemy : MonoBehaviour
     public int bossTimer;
     public bool canAttack;
     public bool canDrop;
+    public bool isDead;
 
     public GameObject drop;
     public Transform player;
@@ -46,7 +47,7 @@ public class Enemy : MonoBehaviour
             bossAnim.SetBool("Enabled", true);
         }
 
-        if(canAttack && bossEnabled) {
+        if(canAttack && bossEnabled && !isDead) {
             canAttack = false;
             IEnumerator animTimer = AttackTimer();
             StartCoroutine(animTimer);
@@ -54,7 +55,13 @@ public class Enemy : MonoBehaviour
     }
 
     private void Die() {
-        Destroy(gameObject);
+        if(bossEnabled) {
+            bossAnim.SetBool("Dead", true);
+            isDead = true;
+        } else {
+            Destroy(gameObject);
+        }
+        
     }
 
     public void Hit() {
