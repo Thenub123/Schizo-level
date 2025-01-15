@@ -44,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
     public Animator[] gun_anim;
     public Animator arm;
     public float[] cooldowns;
+    public int[] damages;
 
     bool canShoot = true;
     public bool canSlap = true;
@@ -118,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-        if (Input.GetMouseButtonDown(0) && canShoot == true){
+        if (((current_weapon == 2 && Input.GetMouseButton(0)) || Input.GetMouseButtonDown(0)) && canShoot == true){
             canShoot = false;
             IEnumerator cooldown = Cooldown();
             StartCoroutine(cooldown);
@@ -161,7 +162,7 @@ public class PlayerMovement : MonoBehaviour
 
                 if(hit.collider.GetComponent<Enemy>()) {
                     hit.collider.GetComponent<Enemy>().Hit();
-                    hit.collider.GetComponent<Enemy>().health -= 10;
+                    hit.collider.GetComponent<Enemy>().health -= damages[current_weapon];
                 }
             }
         }
@@ -193,7 +194,7 @@ public class PlayerMovement : MonoBehaviour
                 burst_particle.Play();
                 if(hit.collider.GetComponent<Enemy>()) {
                     hit.collider.GetComponent<Enemy>().Hit();
-                    hit.collider.GetComponent<Enemy>().health -= 10;
+                    hit.collider.GetComponent<Enemy>().health -= 50;
                 }
             }
         }
